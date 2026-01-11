@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memo Release | Secure Archive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #10b981;
+            --dark-emerald: #064e3b;
+            --deep-forest: #022c22;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --danger-red: #ef4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at top, var(--dark-emerald), var(--deep-forest));
+            color: #ffffff; min-height: 100vh;
+        }
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 8%; background: rgba(2, 44, 34, 0.9); backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 1000;
+        }
+        .logo { font-weight: 800; font-size: 1.4rem; color: #fff; }
+        .logo span { color: var(--primary-green); }
+        .nav-links { display: flex; list-style: none; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: #94a3b8; font-weight: 600; transition: 0.3s; }
+        .nav-links a.active { color: var(--primary-green); }
+
+        /* Motivation Section */
+        .motivation-header {
+            text-align: center; padding: 60px 20px 20px;
+        }
+        .motivation-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; }
+        .motivation-header p { color: var(--primary-green); font-style: italic; opacity: 0.8; }
+
+        /* Admin Control Card */
+        .admin-section {
+            max-width: 800px; margin: 20px auto; padding: 30px;
+            background: linear-gradient(145deg, rgba(16, 185, 129, 0.05), rgba(0,0,0,0.2));
+            border-radius: 30px; border: 1px solid var(--glass-border); text-align: center;
+        }
+        .auth-box {
+            border: 2px dashed rgba(16, 185, 129, 0.4); padding: 30px;
+            border-radius: 20px; cursor: pointer; transition: 0.3s;
+        }
+        .auth-box:hover { border-color: var(--primary-green); background: rgba(16, 185, 129, 0.08); }
+
+        /* Hierarchical Gallery */
+        .gallery-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .gallery-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-auto-rows: 350px; gap: 25px;
+        }
+        .gallery-item {
+            background: var(--glass-bg); border-radius: 20px; border: 1px solid var(--glass-border);
+            overflow: hidden; position: relative; transition: 0.5s; cursor: pointer;
+        }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .gallery-item:hover img { transform: scale(1.05); filter: brightness(0.6); }
+
+        .delete-btn {
+            position: absolute; top: 15px; right: 15px;
+            background: var(--danger-red); color: white; border: none;
+            padding: 8px 15px; border-radius: 10px; font-weight: 800;
+            opacity: 0; transition: 0.3s; font-size: 0.75rem; z-index: 5;
+        }
+        .gallery-item:hover .delete-btn { opacity: 1; }
+
+        /* Pop-up Lightbox */
+        .lightbox {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            display: none; justify-content: center; align-items: center; z-index: 5000;
+            backdrop-filter: blur(20px); cursor: zoom-out;
+            flex-direction: column; /* Allow content to stack */
+        }
+        .lightbox.active { display: flex; }
+        .lightbox-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .lightbox img { 
+            max-width: 100%; max-height: 70vh; /* Adjust height to make space for text and button */
+            border: 3px solid var(--primary-green); 
+            border-radius: 15px; 
+            box-shadow: 0 0 50px rgba(16, 185, 129, 0.3);
+            cursor: default;
+            object-fit: contain; /* Ensure image fits without cropping */
+        }
+        .close-lightbox { 
+            position: absolute; top: 30px; right: 40px; 
+            font-size: 3rem; color: white; cursor: pointer; 
+            transition: 0.3s;
+        }
+        .close-lightbox:hover { color: var(--primary-green); transform: scale(1.2); }
+
+        .download-btn {
+            background: var(--primary-green); color: white; border: none;
+            padding: 12px 25px; border-radius: 8px; font-weight: 600;
+            margin-top: 20px; cursor: pointer; transition: 0.3s;
+            text-decoration: none; /* For the anchor tag */
+            display: inline-block; /* For the anchor tag */
+        }
+        .download-btn:hover { background: #0c8a66; transform: translateY(-2px); }
+
+        .motivation-quote {
+            color: #e0e0e0;
+            font-size: 1.1rem;
+            font-style: italic;
+            margin-top: 20px;
+            max-width: 80%;
+            text-align: center;
+        }
+
+        .empty-state { grid-column: 1/-1; text-align: center; padding: 100px; color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">School <span>Hub</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="memo.html" class="active">Memo Release</a></li>
+        </ul>
+    </nav>
+
+    <header class="motivation-header">
+        <h1>Stay <span>Informed.</span></h1>
+        <p>"Transparency is the foundation of a strong student community."</p>
+    </header>
+
+    <section class="admin-section">
+        <div class="auth-box" id="auth-box">
+            <p id="auth-status" style="font-weight: 600; font-size: 1.1rem;">Authorize & Upload New Memo</p>
+            <p style="color: #94a3b8; font-size: 0.8rem;">Click to unlock General Secretary Protocol</p>
+        </div>
+        <input type="file" id="secure-input" style="display: none;" accept="image/*">
+    </section>
+
+    <main class="gallery-container">
+        <div class="gallery-grid" id="memo-gallery">
+            <div class="empty-state" id="no-memos">Official record is currently empty.</div>
+        </div>
+    </main>
+
+    <div class="lightbox" id="lightbox">
+        <span class="close-lightbox" onclick="closeLightbox()">&times;</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="">
+            <p id="motivation-text" class="motivation-quote"></p>
+            <a id="download-memo-btn" class="download-btn" download="official_memo.png">Download Memo</a>
+        </div>
+    </div>
+
+    <script>
+        const MASTER_KEY = "DolapoAdmin";
+        const authBox = document.getElementById('auth-box');
+        const secureInput = document.getElementById('secure-input');
+        const gallery = document.getElementById('memo-gallery');
+        const noMemosMsg = document.getElementById('no-memos');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const downloadMemoBtn = document.getElementById('download-memo-btn');
+        const motivationText = document.getElementById('motivation-text');
+
+        // AI-Generated Motivational Quotes (100+ items)
+        const motivationalQuotes = [
+            "Every expert was once a beginner. Keep learning!",
+            "Your potential is endless. Go out and prove it.",
+            "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+            "The only way to do great work is to love what you do.",
+            "Believe you can and you're halfway there.",
+            "The future belongs to those who believe in the beauty of their dreams.",
+            "Don't watch the clock; do what it does. Keep going.",
+            "The best way to predict the future is to create it.",
+            "It does not matter how slowly you go as long as you do not stop.",
+            "What you get by achieving your goals is not as important as what you become by achieving your goals.",
+            "Strive for progress, not perfection.",
+            "The mind is everything. What you think you become.",
+            "Challenges are what make life interesting and overcoming them is what makes life meaningful.",
+            "You are stronger than you think.",
+            "The beautiful thing about learning is that no one can take it away from you.",
+            "Push yourself, because no one else is going to do it for you.",
+            "Great things never come from comfort zones.",
+            "Dream it. Wish it. Do it.",
+            "Success is the sum of small efforts repeated day in and day out.",
+            "The harder you work for something, the greater you'll feel when you achieve it.",
+            "Don't stop when you're tired. Stop when you're done.",
+            "Wake up with determination, go to bed with satisfaction.",
+            "Do something today that your future self will thank you for.",
+            "Little things make big days.",
+            "It's going to be hard, but hard does not mean impossible.",
+            "The only limit to our realization of tomorrow will be our doubts of today.",
+            "Sometimes later becomes never. Do it now.",
+            "Great works are performed not by strength but by perseverance.",
+            "Learning is a treasure that will follow its owner everywhere.",
+            "The journey of a thousand miles begins with a single step.",
+            "Innovation distinguishes between a leader and a follower.",
+            "The road to success and the road to failure are almost exactly the same.",
+            "Opportunities don't happen, you create them.",
+            "Always do your best. What you plant now, you will harvest later.",
+            "To be successful, you have to have your heart in your business, and your business in your heart.",
+            "I find that the harder I work, the more luck I seem to have.",
+            "Success is walking from failure to failure with no loss of enthusiasm.",
+            "If you are not willing to risk the usual, you will have to settle for the ordinary.",
+            "Give yourself a break. Recharge and come back stronger.",
+            "Your attitude, not your aptitude, will determine your altitude.",
+            "You can't cross the sea merely by standing and staring at the water.",
+            "The future depends on what you do today.",
+            "The only true wisdom is in knowing you know nothing.",
+            "The roots of education are bitter, but the fruit is sweet.",
+            "Education is the most powerful weapon which you can use to change the world.",
+            "The mind is not a vessel to be filled, but a fire to be kindled.",
+            "Live as if you were to die tomorrow. Learn as if you were to live forever.",
+            "Develop a passion for learning. If you do, you will never cease to grow.",
+            "Learning never exhausts the mind.",
+            "Study hard, for the well-being of your generation depends on it.",
+            "Your brain is the most powerful weapon you have. Train it well.",
+            "Knowledge is power. Information is liberating. Education is the premise of progress.",
+            "Failure is the opportunity to begin again more intelligently.",
+            "Success is a journey, not a destination. The doing is often more important than the outcome.",
+            "If you want to live a happy life, tie it to a goal, not to people or things.",
+            "Only I can change my life. No one can do it for me.",
+            "Happiness is not something readymade. It comes from your own actions.",
+            "The best revenge is massive success.",
+            "The only person you are destined to become is the person you decide to be.",
+            "You miss 100% of the shots you don't take.",
+            "The power of imagination makes us infinite.",
+            "What lies behind us and what lies before us are tiny matters compared to what lies within us.",
+            "With great power comes great responsibility.",
+            "If you want to lift yourself up, lift up someone else.",
+            "When you have a dream, you've got to grab it and never let go.",
+            "Nothing is impossible, the word itself says 'I'm possible'!",
+            "The bad news is time flies. The good news is you're the pilot.",
+            "Life has no remote, get up and change it yourself.",
+            "If opportunity doesn't knock, build a door.",
+            "The greatest glory in living lies not in never falling, but in rising every time we fall.",
+            "The way to get started is to quit talking and begin doing.",
+            "Your time is limited, don't waste it living someone else's life.",
+            "Keep your eyes on the stars, and your feet on the ground.",
+            "It is during our darkest moments that we must focus to see the light.",
+            "Perseverance is not a long race; it is many short races one after the other.",
+            "If you can dream it, you can achieve it.",
+            "Either you run the day, or the day runs you.",
+            "The only impossible journey is the one you never begin.",
+            "Don't count the days, make the days count.",
+            "The mind is a powerful thing. It can make you believe anything.",
+            "To hell with circumstances; I create opportunities.",
+            "The starting point of all achievement is desire.",
+            "It's not what you look at that matters, it's what you see.",
+            "The best revenge is massive success.",
+            "You are never too old to set another goal or to dream a new dream.",
+            "The difference between ordinary and extraordinary is that little extra.",
+            "Your only limit is your mind.",
+            "Action is the foundational key to all success.",
+            "If you have integrity, nothing else matters. If you don't have integrity, nothing else matters.",
+            "The secret of getting ahead is getting started.",
+            "Don't be afraid to give up the good to go for the great.",
+            "I've failed over and over and over again in my life. And that is why I succeed.",
+            "What defines us is how well we rise after falling.",
+            "Only those who dare to fail greatly can ever achieve greatly.",
+            "If you really look closely, most overnight successes took a long time.",
+            "Strength does not come from winning. Your struggles develop your strengths.",
+            "The journey to a thousand success stories begins with a single step of courage."
+        ];
+
+        // Load saved memos on startup
+        window.onload = () => {
+            const savedMemos = JSON.parse(localStorage.getItem('saved_memos')) || [];
+            if (savedMemos.length > 0) {
+                noMemosMsg.style.display = 'none';
+                savedMemos.forEach(data => createMemoItem(data, false));
+            }
+        };
+
+        authBox.onclick = () => {
+            const entry = prompt("Enter General Secretary Admin Password:");
+            if (entry === MASTER_KEY) {
+                secureInput.click();
+            } else if (entry !== null) {
+                alert("⛔ ACCESS DENIED.");
+            }
+        };
+
+        secureInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    createMemoItem(event.target.result, true);
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        function createMemoItem(imgData, isNew) {
+            if(noMemosMsg) noMemosMsg.style.display = 'none';
+            
+            const container = document.createElement('div');
+            container.className = 'gallery-item';
+            container.innerHTML = `
+                <button class="delete-btn" onclick="deleteMemo(event, this)">DELETE</button>
+                <img src="${imgData}" alt="Official Memo">
+            `;
+
+            // Attach click event for lightbox and motivation
+            container.querySelector('img').onclick = () => openLightbox(imgData);
+
+            gallery.prepend(container);
+
+            if (isNew) {
+                const savedMemos = JSON.parse(localStorage.getItem('saved_memos')) || [];
+                savedMemos.push(imgData);
+                localStorage.setItem('saved_memos', JSON.stringify(savedMemos));
+            }
+        }
+
+        function openLightbox(src) {
+            lightboxImg.src = src;
+            downloadMemoBtn.href = src; // Set download link
+            downloadMemoBtn.download = `official_memo_${new Date().getTime()}.png`; // Unique filename
+
+            // Display a random motivation quote
+            const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
+            motivationText.textContent = motivationalQuotes[randomIndex];
+
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Stop background scrolling
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close lightbox if clicking the black background
+        lightbox.onclick = (e) => {
+            // Only close if clicking the lightbox background, not its content
+            if (e.target === lightbox || e.target.classList.contains('lightbox-content')) closeLightbox();
+        };
+
+        function deleteMemo(e, btn) {
+            e.stopPropagation();
+            const pass = prompt("Enter Admin Password to delete:");
+            if (pass === MASTER_KEY) {
+                const item = btn.parentElement;
+                const imgSource = item.querySelector('img').src;
+                
+                // Remove from Storage
+                let savedMemos = JSON.parse(localStorage.getItem('saved_memos')) || [];
+                savedMemos = savedMemos.filter(m => m !== imgSource);
+                localStorage.setItem('saved_memos', JSON.stringify(savedMemos));
+
+                item.remove();
+                if (gallery.children.length === 0) noMemosMsg.style.display = 'block';
+            } else if (pass !== null) {
+                alert("⛔ DELETE DENIED: Incorrect Security Key.");
+            }
+        }
+    </script>
+</body>
+</html>
