@@ -4,25 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minutes Vault | Equity Crew 26</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700&family=Oswald:wght@500;700&family=Cinzel:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary-green: #10b981;
-            --accent-gold: #fbbf24;
+            --deep-emerald: #064e3b;
+            --accent-gold: #d4af37;
             --bg-color: #020617;
             --text-color: #f8fafc;
             --glass: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --shadow: 0 20px 50px rgba(0,0,0,0.5);
+            --card-border: rgba(212, 175, 55, 0.2);
+            --shadow: 0 20px 50px rgba(0,0,0,0.6);
         }
 
         [data-theme="light"] {
-            --bg-color: #f1f5f9;
+            --bg-color: #f8fafc;
             --text-color: #0f172a;
-            --glass: rgba(255, 255, 255, 0.8);
-            --card-border: rgba(0, 0, 0, 0.05);
-            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --glass: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(16, 185, 129, 0.2);
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
         body {
@@ -30,112 +31,172 @@
             background: var(--bg-color);
             color: var(--text-color);
             margin: 0; transition: 0.4s;
+            overflow-x: hidden;
         }
 
         /* --- NAVIGATION --- */
         .nav-bar {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 5%; background: var(--glass); backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--card-border); sticky: top;
+            padding: 15px 5%; background: var(--glass); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+            position: sticky; top: 0; z-index: 100;
         }
 
         .gold-btn {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: black; padding: 10px 20px; border-radius: 8px;
-            font-weight: 700; border: none; cursor: pointer; text-transform: uppercase;
+            background: linear-gradient(135deg, var(--accent-gold), #b08d29);
+            color: #000; padding: 12px 24px; border-radius: 8px;
+            font-weight: 700; border: none; cursor: pointer; 
+            text-transform: uppercase; font-size: 0.8rem;
+            transition: 0.3s;
         }
 
-        .container { padding: 50px 5%; max-width: 1200px; margin: auto; }
+        .gold-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); }
 
-        .hero-title { text-align: center; margin-bottom: 60px; }
-        .hero-title h1 { font-family: 'Oswald'; font-size: 3rem; color: var(--primary-green); letter-spacing: 4px; margin:0; }
-        .hero-title p { opacity: 0.6; font-weight: 300; }
+        .container { padding: 40px 5%; max-width: 1300px; margin: auto; }
 
-        /* --- RICH CARDS --- */
+        .hero-title { text-align: center; margin-bottom: 50px; }
+        .hero-title h1 { font-family: 'Cinzel', serif; font-size: 3.5rem; color: var(--accent-gold); margin:0; text-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
+        .hero-title p { opacity: 0.7; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; margin-top: 10px; }
+
+        /* --- BOOK DISPLAY AREA --- */
+        .minutes-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px; margin-top: 40px;
+        }
+
+        .book-item {
+            background: var(--glass);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-item:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-10px);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .book-cover {
+            width: 120px; height: 160px;
+            background: linear-gradient(135deg, var(--deep-emerald), #022c22);
+            margin: 0 auto 15px;
+            border-radius: 4px 10px 10px 4px;
+            border-left: 5px solid var(--accent-gold);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .book-cover i { font-size: 3rem; color: var(--accent-gold); opacity: 0.8; }
+
+        .book-item h3 { font-family: 'Oswald'; font-size: 1.1rem; margin-bottom: 5px; color: var(--primary-green); }
+        .book-item p { font-size: 0.8rem; opacity: 0.6; }
+
+        /* --- PDF MODAL (THE BOOK READER) --- */
+        .reader-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            z-index: 1000; display: none; flex-direction: column;
+            padding: 20px;
+        }
+
+        .reader-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 20px; color: var(--accent-gold);
+        }
+
+        .pdf-frame {
+            flex: 1; border-radius: 12px; border: 1px solid var(--card-border);
+            background: #fff; width: 90%; max-width: 1000px; margin: 20px auto;
+        }
+
+        /* --- FORM STYLING --- */
         .glass-card {
             background: var(--glass); border: 1px solid var(--card-border);
-            border-radius: 24px; padding: 35px; box-shadow: var(--shadow);
-            backdrop-filter: blur(20px); transition: 0.3s;
+            border-radius: 24px; padding: 30px; box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
         }
 
-        .input-group label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 0.8rem; color: var(--accent-gold); }
-        input, textarea, select {
+        input, textarea {
             width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--card-border);
-            padding: 15px; border-radius: 12px; color: var(--text-color); margin-bottom: 20px;
+            padding: 12px; border-radius: 8px; color: var(--text-color); margin-bottom: 15px;
+            font-family: inherit;
         }
 
-        /* --- TABLE STYLE --- */
-        .rich-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .rich-table th { background: rgba(0,0,0,0.2); padding: 18px; color: var(--accent-gold); text-align: left; font-family: 'Oswald'; }
-        .rich-table td { padding: 18px; border-bottom: 1px solid var(--card-border); }
+        label { color: var(--accent-gold); font-weight: bold; font-size: 0.75rem; letter-spacing: 1px; }
 
-        /* --- FOOTER --- */
         footer {
-            margin-top: 100px; padding: 60px 5%; background: rgba(0,0,0,0.2);
+            margin-top: 100px; padding: 60px 5%; background: rgba(0,0,0,0.3);
             border-top: 1px solid var(--card-border); text-align: center;
         }
-
-        .footer-logo { font-family: 'Oswald'; font-size: 1.5rem; color: var(--primary-green); margin-bottom: 10px; }
     </style>
 </head>
 <body data-theme="dark">
 
     <nav class="nav-bar">
-        <a href="index.html" style="color:var(--primary-green); text-decoration:none; font-weight:bold;">← SECRETARIAT HOME</a>
+        <a href="index.html" style="color:var(--primary-green); text-decoration:none; font-weight:bold; letter-spacing: 1px;">← HUB HOME</a>
         <div>
             <button onclick="toggleTheme()" style="background:none; border:none; color:var(--text-color); margin-right:20px; cursor:pointer;"><i id="tIcon" class="fas fa-sun"></i></button>
-            <button class="gold-btn" onclick="openVault()"><i class="fas fa-key"></i> ADMIN VAULT</button>
+            <button class="gold-btn" onclick="openVault()"><i class="fas fa-key"></i> ADMIN PORTAL</button>
         </div>
     </nav>
 
     <div class="container">
         <div class="hero-title">
-            <h1>MINUTES ARCHIVE</h1>
-            <p>Digitizing the Legacy of Equity Crew since 2000</p>
+            <h1>MINUTES VAULT</h1>
+            <p>The Digital Record of Equity Crew '26</p>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 60px;">
             <div class="glass-card">
-                <h2 style="font-family:'Oswald'; color:var(--primary-green);">LOG SESSION</h2>
+                <h2 style="font-family:'Oswald'; color:var(--primary-green); margin-bottom: 25px;">NEW SESSION LOG</h2>
                 <div class="input-group">
-                    <label>MEETING TITLE</label>
-                    <input type="text" id="minTitle" placeholder="Ex: Q3 Executive Sitting">
-                    <label>MEETING DATE</label>
+                    <label>DOCUMENT TITLE</label>
+                    <input type="text" id="minTitle" placeholder="Ex: August Plenary Session">
+                    <label>SESSION DATE</label>
                     <input type="date" id="minDate">
-                    <label>MINUTES CONTENT</label>
-                    <textarea id="minText" rows="6" placeholder="Document the deliberations..."></textarea>
-                    <button class="gold-btn" style="width:100%" onclick="saveMinutes()">SAVE TO REGISTRY</button>
+                    <label>SUMMARY / SENSITIVE NOTES</label>
+                    <textarea id="minText" rows="4" placeholder="Briefly summarize or log sensitive data for the admin vault..."></textarea>
+                    <button class="gold-btn" style="width:100%" onclick="saveMinutes()">COMMIT TO VAULT</button>
                 </div>
             </div>
 
-            <div class="glass-card">
-                <h2 style="font-family:'Oswald';">RECENT REGISTRY</h2>
-                <table class="rich-table">
-                    <thead>
-                        <tr><th>DATE</th><th>TITLE</th><th>ACTION</th></tr>
-                    </thead>
-                    <tbody id="publicTable">
-                        </tbody>
-                </table>
+            <div class="glass-card" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+                <i class="fas fa-book-open" style="font-size: 4rem; color: var(--accent-gold); margin-bottom: 20px;"></i>
+                <h2 style="font-family:'Oswald';">ARCHIVE STATS</h2>
+                <p style="opacity: 0.6;">Total Minutes Logged: <span id="minuteCount" style="color: var(--primary-green); font-weight: bold;">20</span></p>
+                <p style="font-size: 0.8rem;">Documents are encrypted and stored in the secure legacy registry.</p>
             </div>
         </div>
 
+        <h2 style="font-family:'Cinzel'; text-align: center; color: var(--accent-gold); border-bottom: 1px solid var(--card-border); padding-bottom: 15px;">THE REGISTRY</h2>
+        
+        <div class="minutes-grid" id="bookRegistry">
+            </div>
+
         <div id="adminVault" style="display:none; margin-top:50px;" class="glass-card">
-            <h2 style="color:var(--accent-gold); font-family:'Oswald';"><i class="fas fa-lock"></i> SENSITIVE DELIBERATIONS VAULT</h2>
-            <table class="rich-table">
-                <thead>
-                    <tr><th>TIMESTAMP</th><th>OFFICE</th><th>SENSITIVE NOTES</th></tr>
-                </thead>
-                <tbody id="vaultTableBody"></tbody>
-            </table>
+            <h2 style="color:var(--accent-gold); font-family:'Oswald';"><i class="fas fa-lock"></i> SECURE ADMIN LEDGER</h2>
+            <div id="vaultContent"></div>
         </div>
     </div>
 
+    <div class="reader-overlay" id="readerModal">
+        <div class="reader-header">
+            <h2 id="readerTitle" style="font-family:'Oswald'; margin:0;">DOCUMENT VIEW</h2>
+            <button class="gold-btn" onclick="closeReader()">CLOSE BOOK</button>
+        </div>
+        <iframe id="pdfViewer" class="pdf-frame" src=""></iframe>
+    </div>
+
     <footer>
-        <div class="footer-logo">EQUITY CREW '26</div>
-        <p style="opacity:0.5; font-size:0.8rem;">General Secretariat Management Suite &copy; 2026<br>Office of the General Secretary</p>
-        <div style="margin-top:20px; font-size:1.2rem; gap:15px; display:flex; justify-content:center; color:var(--primary-green);">
-            <i class="fab fa-facebook"></i> <i class="fab fa-twitter"></i> <i class="fab fa-linkedin"></i>
+        <div class="footer-logo" style="font-family: 'Cinzel'; color: var(--accent-gold);">EQUITY CREW '26</div>
+        <p style="opacity:0.5; font-size:0.8rem; letter-spacing: 1px;">GENERAL SECRETARIAT ARCHIVE SUITE<br>Office of the General Secretary</p>
+        <div style="margin-top:20px; font-size:1.2rem; gap:20px; display:flex; justify-content:center; color:var(--primary-green);">
+            <i class="fab fa-facebook-f"></i> <i class="fab fa-instagram"></i> <i class="fab fa-linkedin-in"></i>
         </div>
     </footer>
 
@@ -148,49 +209,85 @@
             document.getElementById('tIcon').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
         }
 
-        // 2. Populate 20 Legacy Records
-        const publicTable = document.getElementById('publicTable');
-        for(let i=1; i<=20; i++) {
-            let row = `<tr>
-                <td><small>202${6-Math.floor(i/4)}-0${(i%9)+1}</small></td>
-                <td>Legacy Minute Entry #${2000+i}</td>
-                <td><a href="#" style="color:var(--primary-green); font-size:0.7rem;">DOWNLOAD PDF</a></td>
-            </tr>`;
-            publicTable.innerHTML += row;
+        // 2. Populate Registry as Books
+        const bookRegistry = document.getElementById('bookRegistry');
+        
+        // Mock PDF URLs - You will replace these with your uploaded paths
+        const mockPdfs = [
+            "path/to/your/document1.pdf",
+            "path/to/your/document2.pdf"
+        ];
+
+        function renderArchive() {
+            bookRegistry.innerHTML = "";
+            for(let i=1; i<=20; i++) {
+                const date = `2026-01-${i < 10 ? '0'+i : i}`;
+                const title = `Executive Sitting Vol. ${200 + i}`;
+                
+                let book = `
+                <div class="book-item" onclick="openBook('${title}', 'mock.pdf')">
+                    <div class="book-cover">
+                        <i class="fas fa-scroll"></i>
+                    </div>
+                    <h3>${title}</h3>
+                    <p><i class="far fa-calendar-alt"></i> ${date}</p>
+                    <span style="font-size:0.7rem; color:var(--accent-gold);">READ MINUTE</span>
+                </div>`;
+                bookRegistry.innerHTML += book;
+            }
         }
 
-        // 3. Save Minutes & Vault Logic
+        renderArchive();
+
+        // 3. Reader Logic
+        function openBook(title, pdfUrl) {
+            document.getElementById('readerTitle').innerText = title;
+            // Note: In a real scenario, you'd set the src to the pdfUrl
+            // For now, it stays empty or loads a placeholder
+            document.getElementById('pdfViewer').src = pdfUrl; 
+            document.getElementById('readerModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeReader() {
+            document.getElementById('readerModal').style.display = 'none';
+            document.getElementById('pdfViewer').src = "";
+            document.body.style.overflow = 'auto';
+        }
+
+        // 4. Admin Vault
         let secretData = JSON.parse(localStorage.getItem('minutes_vault')) || [];
 
         function saveMinutes() {
             const title = document.getElementById('minTitle').value;
             const text = document.getElementById('minText').value;
-            if(!title || !text) return alert("Fill all fields");
+            if(!title || !text) return alert("Archive requires complete data.");
 
             const entry = { time: new Date().toLocaleString(), title: title, content: text };
             secretData.push(entry);
             localStorage.setItem('minutes_vault', JSON.stringify(secretData));
             
-            alert("Minutes synchronized with Secure Vault.");
+            alert("Record successfully synchronized with the Secure Vault.");
             document.getElementById('minTitle').value = '';
             document.getElementById('minText').value = '';
         }
 
         function openVault() {
-            const pass = prompt("Enter Administrator Password:");
-            if(pass === "1234") {
-                document.getElementById('adminVault').style.display = 'block';
-                const vBody = document.getElementById('vaultTableBody');
+            const pass = prompt("Enter Vault Access Key:");
+            if(pass === "DolapoAdmin") {
+                const vault = document.getElementById('adminVault');
+                vault.style.display = 'block';
+                const vBody = document.getElementById('vaultContent');
                 vBody.innerHTML = secretData.map(d => `
-                    <tr>
-                        <td><small>${d.time}</small></td>
-                        <td><b>${d.title}</b></td>
-                        <td style="font-size:0.8rem; opacity:0.8;">${d.content}</td>
-                    </tr>
+                    <div style="border-bottom:1px solid var(--card-border); padding:15px 0;">
+                        <small style="color:var(--primary-green)">${d.time}</small>
+                        <h4 style="margin:5px 0; color:var(--accent-gold);">${d.title}</h4>
+                        <p style="font-size:0.9rem; opacity:0.8; margin:0;">${d.content}</p>
+                    </div>
                 `).join('');
-                window.scrollTo(0, document.body.scrollHeight);
+                vault.scrollIntoView({behavior: "smooth"});
             } else {
-                alert("Access Denied.");
+                alert("Unauthorized Access Attempt Recorded.");
             }
         }
     </script>
