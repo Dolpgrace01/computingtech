@@ -143,15 +143,7 @@
         <div class="attendance-grid">
 <button class="ATTENDANCE" onclick="window.location.href='attendancepage.html'">
     TAKE ATTENDANCE
-</button>            <!-- <div class="member-card"><div class="member-info"><span>Executive 01</span><b>President</b></div><input type="checkbox" class="attendance-check"></div>
-            <div class="member-card"><div class="member-info"><span>Executive 02</span><b>Vice President</b></div><input type="checkbox" class="attendance-check"></div>
-            <div class="member-card"><div class="member-info"><span>Executive 03</span><b>Gen. Secretary</b></div><input type="checkbox" class="attendance-check"></div>
-            <div class="member-card"><div class="member-info"><span>Executive 04</span><b>Asst. Gen Sec.</b></div><input type="checkbox" class="attendance-check"></div>
-            <div class="member-card"><div class="member-info"><span>Executive 05</span><b>Financial Sec.</b></div><input type="checkbox" class="attendance-check"></div>
-            <div class="member-card"><div class="member-info"><span>Executive 06</span><b>Treasurer</b></div><input type="checkbox" class="attendance-check"></div>
-            <div class="member-card"><div class="member-info"><span>Executive 07</span><b>P.R.O</b></div><input type="checkbox" class="attendance-check"></div>
-            <div class="member-card"><div class="member-info"><span>Executive 08</span><b>Sports Director</b></div><input type="checkbox" class="attendance-check"></div>
-            <div class="member-card"><div class="member-info"><span>Executive 09</span><b>Welfare Director</b></div><input type="checkbox" class="attendance-check"></div> -->
+</button>            
         </div>
 
         <div class="section-header"><h2><i class="fas fa-pen-nib"></i> Live Meeting Minutes Desk </h2><div class="line"></div></div>
@@ -236,7 +228,8 @@
 
         function verifyAdmin() {
             const p = document.getElementById('adminPass').value;
-            if(p === "1234") {
+            // Password updated to dolpgrace01
+            if(p === "DolapoAdmin") {
                 document.getElementById('authZone').style.display = 'none';
                 document.getElementById('dataZone').style.display = 'block';
                 loadLogs();
