@@ -3,99 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS Vault | View-Only Access</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Cinzel:wght@700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <title>CS Vault | Emerald Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary-green: #10b981;
-            --bg: #020617;
-            --header-bg: rgba(2, 44, 34, 0.95);
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --text: #ffffff;
-            --sub-text: #94a3b8;
+            --primary: #10b981;
+            --primary-dark: #064e3b;
+            --bg-dark: #020617;
+            --card-bg: #022c22;
+            --text-main: #ecfdf5;
+            --text-dim: #6ee7b7;
             --border: rgba(16, 185, 129, 0.2);
         }
 
-        [data-theme="light"] {
-            --bg: #f8fafc;
-            --header-bg: rgba(255, 255, 255, 0.95);
-            --card-bg: #ffffff;
-            --text: #0f172a;
-            --sub-text: #475569;
-            --border: rgba(16, 185, 129, 0.3);
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: var(--text-main);
+            line-height: 1.6;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: background 0.3s, color 0.3s; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+        /* Deep Green Ambient Glow */
+        .glow {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% -20%, var(--primary-dark), transparent 70%);
+            z-index: -1; pointer-events: none;
+        }
 
-        /* Navigation */
-        .nav {
+        nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem 5%; background: var(--header-bg);
-            backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
-            position: sticky; top: 0; z-index: 1000;
-        }
-        .nav-group { display: flex; align-items: center; gap: 12px; }
-        .nav-btn {
-            background: var(--card-bg); border: 1px solid var(--border);
-            color: var(--primary-green); padding: 8px 14px; border-radius: 10px;
-            cursor: pointer; text-decoration: none; font-size: 0.75rem; font-weight: 800;
+            padding: 1rem 5%; background: rgba(2, 44, 34, 0.8);
+            backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 100;
         }
 
-        /* Hero */
-        .header { text-align: center; padding: 40px 20px; }
-        .search-container { max-width: 600px; margin: 20px auto; }
-        .search-container input {
-            width: 100%; padding: 14px 25px; border-radius: 50px;
-            border: 1px solid var(--border); background: var(--card-bg); color: var(--text); outline: none;
+        .back-btn {
+            background: var(--primary-dark); color: var(--primary);
+            border: 1px solid var(--primary); padding: 8px 16px;
+            border-radius: 8px; cursor: pointer; font-weight: 800;
+            display: flex; align-items: center; gap: 8px; text-decoration: none;
         }
 
-        /* Grid */
+        .hero { text-align: center; padding: 50px 20px; }
+        .hero h1 { font-size: 2.2rem; color: var(--primary); letter-spacing: -1px; }
+
+        .search-area { max-width: 500px; margin: 20px auto; padding: 0 20px; }
+        .search-input {
+            width: 100%; padding: 14px 20px; border-radius: 12px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+            color: white; outline: none; font-size: 1rem;
+        }
+
         .grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px; max-width: 1200px; margin: 0 auto; padding: 20px 20px 100px;
+            gap: 20px; max-width: 1100px; margin: 0 auto; padding: 20px;
         }
+
         .card {
             background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 20px; padding: 20px; position: relative;
-            display: flex; flex-direction: column; transition: 0.3s;
+            border-radius: 16px; padding: 25px; transition: 0.3s;
+            cursor: pointer; position: relative;
         }
-        .card:hover { transform: translateY(-5px); border-color: var(--primary-green); }
-        
-        .fav-icon {
-            position: absolute; top: 15px; right: 15px; cursor: pointer;
-            color: var(--sub-text); font-size: 1.2rem; transition: 0.3s; z-index: 5;
-        }
-        .fav-icon.active { color: #facc15; }
+        .card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .card i { font-size: 2rem; color: var(--primary); margin-bottom: 15px; }
+        .card h3 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-main); }
+        .card p { font-size: 0.8rem; color: var(--text-dim); opacity: 0.8; }
 
-        .book-icon { font-size: 2rem; color: var(--primary-green); margin-bottom: 10px; }
-        .title { font-size: 1rem; font-weight: 800; margin-bottom: 8px; line-height: 1.3; }
-        .desc { font-size: 0.8rem; color: var(--sub-text); line-height: 1.5; flex-grow: 1; }
-
-        .view-btn {
-            margin-top: 15px; padding: 12px; border-radius: 12px;
-            background: rgba(16, 185, 129, 0.1); color: var(--primary-green);
-            text-align: center; border: 1px solid var(--primary-green);
-            font-weight: 800; font-size: 0.8rem; cursor: pointer; transition: 0.3s;
-        }
-        .view-btn:hover { background: var(--primary-green); color: #022c22; }
-
-        /* SECURE READER OVERLAY */
-        .reader-overlay {
-            position: fixed; inset: 0; background: var(--bg);
+        /* FIXED READER OVERLAY */
+        #readerOverlay {
+            position: fixed; inset: 0; background: var(--bg-dark);
             z-index: 2000; display: none; flex-direction: column;
         }
-        .reader-overlay.active { display: flex; }
-        
-        .reader-nav {
+        #readerOverlay.active { display: flex; }
+
+        .reader-header {
+            padding: 15px 5%; background: var(--primary-dark);
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 5%; background: var(--header-bg); border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--primary);
         }
 
-        .reader-content {
-            display: grid; grid-template-columns: 300px 1fr; height: calc(100vh - 70px);
+        .reader-body {
+            flex: 1; display: grid; grid-template-columns: 280px 1fr;
+            overflow: hidden;
         }
 
         .reader-sidebar {
@@ -103,223 +96,137 @@
             padding: 30px; overflow-y: auto;
         }
 
-        .reader-view {
-            padding: 60px; overflow-y: auto; position: relative;
-            user-select: none; -webkit-user-select: none;
-        }
-
-        .watermark {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 6rem; color: rgba(16, 185, 129, 0.05); pointer-events: none;
-            white-space: nowrap; font-weight: 900; z-index: 0;
+        .reader-main {
+            padding: 50px 8%; overflow-y: auto; position: relative;
+            background: linear-gradient(to bottom, #020617, #022c22);
         }
 
         .manuscript {
-            font-family: 'JetBrains Mono', monospace; line-height: 1.8;
-            color: var(--sub-text); position: relative; z-index: 1;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.95rem;
+            color: var(--text-main); white-space: pre-line; position: relative; z-index: 2;
         }
 
-        .chapter-list { list-style: none; margin-top: 20px; }
-        .chapter-list li { 
-            padding: 12px 0; border-bottom: 1px solid var(--border); 
-            font-size: 0.75rem; color: var(--sub-text); cursor: pointer;
+        .watermark {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 5rem; color: rgba(16, 185, 129, 0.05); font-weight: 900;
+            pointer-events: none; text-align: center; width: 100%;
         }
-        .chapter-list li:hover { color: var(--primary-green); }
 
-        /* Special Neural View styling */
-        .neural-viz {
-            border: 1px solid var(--primary-green); border-radius: 15px;
-            padding: 20px; margin: 20px 0; background: rgba(16, 185, 129, 0.05);
+        @media (max-width: 768px) {
+            .reader-body { grid-template-columns: 1fr; }
+            .reader-sidebar { display: none; }
         }
     </style>
 </head>
-<body oncontextmenu="return false"> 
+<body oncontextmenu="return false">
 
-    <nav class="nav">
-        <div class="nav-group">
-            <a href="index.html" class="nav-btn"><i class="fas fa-home"></i> HOME</a>
-            <button class="nav-btn" onclick="toggleTheme()"><i class="fas fa-adjust"></i> MODE</button>
-        </div>
-        <div style="font-family:'Cinzel'; font-size:1.1rem; letter-spacing: 2px;">TECH<span>BOOKS</span></div>
-        <div class="nav-group">
-            <button class="nav-btn" onclick="filterFavs()" id="favToggle"><i class="fas fa-star"></i> FAVORITES</button>
-        </div>
-    </nav>
+    <div class="glow"></div>
 
-    <header class="header">
-        <h1 style="font-family:'Cinzel'; font-size: 2.2rem;">CS Restricted Archive</h1>
-        <p style="font-size: 0.75rem; color: var(--sub-text); letter-spacing: 1px; margin-top: 5px;">
-            <i class="fas fa-lock"></i> SECURE VIEWING ONLY • ENCRYPTION ACTIVE
-        </p>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search 100+ Computer Science manuals..." onkeyup="search()">
+    <nav>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> BACK</a>
+        <div style="font-weight: 800; color: var(--primary); letter-spacing: 2px;">TECHBOOKS</div>
+        <div style="width: 80px;"></div> </nav>
+
+    <header class="hero">
+        <h1>Syllabus Archive</h1>
+        <p style="color: var(--text-dim); font-size: 0.8rem;">NABTEB Verified Computing Modules</p>
+        <div class="search-area">
+            <input type="text" class="search-input" id="searchBox" placeholder="Search by course code or title..." onkeyup="doSearch()">
         </div>
     </header>
 
     <main class="grid" id="bookGrid"></main>
 
-    <div class="reader-overlay" id="reader">
-        <div class="reader-nav">
-            <div>
-                <span style="color:var(--primary-green); font-size:0.6rem; font-weight:800; display:block;">SECURE SESSION ACTIVE</span>
-                <span id="doc-title" style="font-family:'Cinzel'; font-weight:bold;">Manual Title</span>
-            </div>
-            <button class="nav-btn" onclick="closeReader()" style="background:#ef4444; color:white; border:none;">CLOSE ARCHIVE</button>
+    <div id="readerOverlay">
+        <div class="reader-header">
+            <button class="back-btn" onclick="closeArchive()"><i class="fas fa-arrow-left"></i> BACK TO GRID</button>
+            <div id="headerTitle" style="font-weight: 800; font-size: 0.9rem;">READING MODE</div>
+            <div style="color: var(--primary); font-size: 0.7rem;"><i class="fas fa-lock"></i> SECURE</div>
         </div>
         
-        <div class="reader-content">
+        <div class="reader-body">
             <aside class="reader-sidebar">
-                <div id="sidebar-icon" style="font-size: 3rem; color: var(--primary-green); margin-bottom: 20px;"></div>
-                <p style="font-weight: 800; font-size: 0.8rem; border-bottom: 1px solid var(--primary-green); display:inline-block;">CONTENTS</p>
-                <ul class="chapter-list">
-                    <li>01. Technical Introduction</li>
-                    <li>02. System Architecture</li>
-                    <li>03. Logic & Functional Data</li>
-                    <li>04. Security Implementation</li>
-                    <li>05. Practical Use Cases</li>
-                    <li>06. Research Bibliography</li>
-                </ul>
+                <div id="sideIcon" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></div>
+                <h4 id="sideCode" style="color: var(--primary); margin-bottom: 5px;"></h4>
+                <h2 id="sideTitle" style="font-size: 1.2rem;"></h2>
+                <p style="font-size: 0.7rem; margin-top: 20px; opacity: 0.6;">Verified Syllabus Content<br>© Equity Crew 2026</p>
             </aside>
-            
-            <main class="reader-view">
-                <div class="watermark">PROPERTY OF GEN SEC</div>
-                <div id="dynamic-detail-area">
-                    </div>
+            <main class="reader-main">
+                <div class="watermark">RESTRICTED ACCESS</div>
+                <div id="readArea" class="manuscript"></div>
             </main>
         </div>
     </div>
 
     <script>
-        const topics = [
-            { t: "Systems Analysis & Design", d: "Software lifecycle and requirement gathering.", i: "fa-project-diagram" },
-            { t: "Operating System Kernel", d: "Memory management and shell scripting.", i: "fa-microchip" },
-            { t: "Computer Architecture", d: "Logic gates, CPU cycles, and ALU design.", i: "fa-memory" },
-            { t: "Network Security Protocols", d: "IPSec, TLS, and Firewall configurations.", i: "fa-shield-halved" },
-            { t: "Neural Synapse", d: "Deep learning models and synaptic weighting.", i: "fa-brain" }
+        const syllabus = [
+            { id: "COM 111", t: "Intro to Computing", d: "Foundations of computer systems, history, and hardware components.", i: "fa-desktop" },
+            { id: "COM 112", t: "Digital Logic I", d: "Boolean algebra, logic gates, and combinational circuits.", i: "fa-microchip" },
+            { id: "COM 113", t: "Intro to Programming", d: "Algorithm design, flowcharts, and basic syntax logic.", i: "fa-code" },
+            { id: "COM 211", t: "Computer Architecture", d: "CPU architecture, memory organization, and ALU design.", i: "fa-memory" },
+            { id: "COM 212", t: "Data Structures", d: "Arrays, Linked Lists, Stacks, Queues, and Trees.", i: "fa-diagram-project" },
+            { id: "COM 221", t: "Operating Systems I", d: "Process management, memory, and file systems.", i: "fa-gears" },
+            { id: "COM 223", t: "Data Communication", d: "Network topologies, OSI model, and protocols.", i: "fa-network-wired" },
+            { id: "COM 224", t: "Web Development", d: "Internet technologies, HTML5, CSS3, and Scripting.", i: "fa-globe" }
         ];
 
-        let favorites = JSON.parse(localStorage.getItem('cs_favs') || '[]');
-
-        function loadBooks() {
+        function renderGrid() {
             const grid = document.getElementById('bookGrid');
-            let html = "";
-            for(let i = 1; i <= 100; i++) {
-                const base = topics[i % topics.length];
-                const isFav = favorites.includes(i) ? 'active' : '';
-                html += `
-                    <div class="card" data-id="${i}">
-                        <i class="fas fa-star fav-icon ${isFav}" onclick="toggleFav(${i}, this)"></i>
-                        <i class="fas ${base.i} book-icon"></i>
-                        <div class="title">${base.t} Vol. ${i}</div>
-                        <div class="desc">${base.d}</div>
-                        <div class="view-btn" onclick="openReader(${i}, '${base.t}', '${base.i}')">OPEN SECURE READER</div>
-                    </div>
-                `;
-            }
-            grid.innerHTML = html;
+            grid.innerHTML = syllabus.map(item => `
+                <div class="card" onclick="openArchive('${item.id}')">
+                    <i class="fas ${item.i}"></i>
+                    <p style="font-weight:800; font-size:0.6rem; color:var(--primary); margin-bottom:5px;">${item.id}</p>
+                    <h3>${item.t}</h3>
+                    <p>${item.d}</p>
+                </div>
+            `).join('');
         }
 
-        function toggleFav(id, el) {
-            event.stopPropagation();
-            if (favorites.includes(id)) {
-                favorites = favorites.filter(item => item !== id);
-                el.classList.remove('active');
-            } else {
-                favorites.push(id);
-                el.classList.add('active');
-            }
-            localStorage.setItem('cs_favs', JSON.stringify(favorites));
+        function openArchive(id) {
+            const book = syllabus.find(b => b.id === id);
+            const overlay = document.getElementById('readerOverlay');
+            
+            document.getElementById('headerTitle').innerText = book.id + " | " + book.t;
+            document.getElementById('sideIcon').className = "fas " + book.i;
+            document.getElementById('sideCode').innerText = book.id;
+            document.getElementById('sideTitle').innerText = book.t;
+
+            // Sample Verified Content
+            document.getElementById('readArea').innerHTML = `
+                <h2 style="color:var(--primary)">Course Objective</h2>
+                This module is designed to prepare students for the comprehensive understanding of ${book.t}. 
+                Upon completion, the student should be able to apply these principles in a practical lab environment.
+
+                <h2 style="color:var(--primary); margin-top:30px;">Key Topics</h2>
+                1. Fundamental principles of ${book.t.split(' ')[0]}
+                2. Security and Data Integrity
+                3. Industry Standard Best Practices
+                4. Performance Optimization in ${book.id}
+
+                <div style="background:rgba(16,185,129,0.1); padding:20px; border-left:4px solid var(--primary); margin-top:30px;">
+                    <strong>Notice:</strong> This syllabus is synchronized with the latest NABTEB standards for the School of Computing. 
+                </div>
+            `;
+
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling background
         }
 
-        function filterFavs() {
-            const btn = document.getElementById('favToggle');
-            const cards = document.querySelectorAll('.card');
-            const isFiltering = !btn.classList.contains('filtering');
-
-            if(isFiltering) {
-                btn.classList.add('filtering');
-                btn.innerHTML = '<i class="fas fa-th"></i> SHOW ALL';
-                cards.forEach(c => {
-                    const id = parseInt(c.dataset.id);
-                    c.style.display = favorites.includes(id) ? 'flex' : 'none';
-                });
-            } else {
-                btn.classList.remove('filtering');
-                btn.innerHTML = '<i class="fas fa-star"></i> FAVORITES';
-                cards.forEach(c => c.style.display = 'flex');
-            }
+        function closeArchive() {
+            const overlay = document.getElementById('readerOverlay');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto'; // Re-enable scroll
         }
 
-        function toggleTheme() {
-            document.body.hasAttribute('data-theme') ? document.body.removeAttribute('data-theme') : document.body.setAttribute('data-theme', 'light');
-        }
-
-        function search() {
-            let q = document.getElementById('searchInput').value.toLowerCase();
+        function doSearch() {
+            let q = document.getElementById('searchBox').value.toLowerCase();
             document.querySelectorAll('.card').forEach(c => {
-                c.style.display = c.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
+                c.style.display = c.innerText.toLowerCase().includes(q) ? 'block' : 'none';
             });
         }
 
-        function openReader(id, title, icon) {
-            const fullTitle = `${title} Vol. ${id}`;
-            document.getElementById('doc-title').innerText = fullTitle;
-            document.getElementById('sidebar-icon').className = `fas ${icon}`;
-            
-            const detailArea = document.getElementById('dynamic-detail-area');
-            
-            // ELABORATE NEURAL SYNAPSE DETAIL
-            if(title === "Neural Synapse") {
-                detailArea.innerHTML = `
-                    <h1 style="font-family:'Cinzel'; color:var(--primary-green); margin-bottom:10px;">NEURAL SYNAPSE</h1>
-                    <p style="color:var(--primary-green); font-size:0.8rem; margin-bottom:20px;">REF: AI-TECH-ARCHIVE-${id}</p>
-                    <div class="manuscript">
-                        This volume details the computational mimicry of human biological synapses. 
-                        In Vol. ${id}, we focus specifically on <strong>Synaptic Weighting</strong> and 
-                        <strong>Gradient Descent</strong> optimization.
-                    </div>
-                    
-                    <div class="neural-viz">
-                        <p style="font-size:0.6rem; font-weight:bold; margin-bottom:10px;">TOPOLOGY SIMULATION</p>
-                        <i class="fas fa-project-diagram" style="font-size:3rem; opacity:0.5;"></i>
-                        <p style="margin-top:10px; font-size:0.8rem;">Data input at layer 0 is squashed using Sigmoid: <br> f(x) = 1 / (1 + exp(-x))</p>
-                    </div>
-                    <div class="manuscript">
-                        By adjusting weights $W_{i,j}$, the system minimizes the cost function $J(\theta)$. 
-                        Consult the Faculty Lab for practical implementation of this manual's pseudo-code.
-                    </div>
-                `;
-            } else {
-                // GENERIC DETAILED VIEW FOR OTHER 95+ TITLES
-                detailArea.innerHTML = `
-                    <h1 style="font-family:'Cinzel'; margin-bottom:10px;">${title}</h1>
-                    <p style="color:var(--primary-green); font-size:0.8rem; margin-bottom:20px;">REF: CS-DOC-ID-${id}-2026</p>
-                    <div class="manuscript">
-                        This document provides the standard technical framework for <strong>${title}</strong>. 
-                        As part of Volume ${id}, students are required to analyze the core principles of 
-                        this domain within the Faculty of Computer Science.
-                        <br><br>
-                        <strong>Secure Protocol:</strong> This file is part of a restricted archive. 
-                        No parts of this document may be reproduced or screenshotted.
-                        <br><br>
-                        <strong>Key Learning Objectives:</strong><br>
-                        1. Theoretical understanding of ${title.split(' ')[0]} logic.<br>
-                        2. Security and Integrity in ${title.split(' ')[1] || 'Systems'}.<br>
-                        3. Scalability metrics in Volume ${id} environments.
-                    </div>
-                `;
-            }
-
-            document.getElementById('reader').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeReader() {
-            document.getElementById('reader').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        loadBooks();
+        // Initialize Grid
+        window.onload = renderGrid;
     </script>
 </body>
 </html>
